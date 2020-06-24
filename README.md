@@ -34,3 +34,6 @@ windows端需要adb工具.
 jieguo.txt是账号上最后三星的结果.
 
 **当前不支持游客号刷初始,各位使用的时候请一定修改zhanghao.txt里的内容**
+
+## Test
+Test Commit
