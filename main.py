@@ -83,7 +83,7 @@ def write_log(account, pwd):
     for touxiang_path in os.listdir(base_path):
         touxiang_path_list.append(base_path + touxiang_path)
     screen_shot = a.d.screenshot(format="opencv")
-    exist_list = a.get_butt_stat(screen_shot, touxiang_path_list)
+    exist_list = a.get_button_stat(screen_shot, touxiang_path_list)
     print(exist_list)
     st = ''
     for i in exist_list:

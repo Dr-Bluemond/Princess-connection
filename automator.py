@@ -1,3 +1,4 @@
+import cv2
 import time
 from cv import *
 import uiautomator2 as u2
@@ -62,15 +63,15 @@ class Automator:
         self.d(resourceId="com.bilibili.priconne:id/bsgamesdk_authentication_submit").click()
         self.d(resourceId="com.bilibili.priconne:id/bagamesdk_auth_success_comfirm").click()
 
-    def get_butt_stat(self, screen_shot, template_paths, threshold=0.84):
+    def get_button_stat(self, screen_shot, template_paths, threshold=0.84):
         # 此函数输入要判断的图片path,屏幕截图, 阈值,   返回大于阈值的path,坐标字典,
         self.dWidth, self.dHeight = self.d.window_size()
         return_dic = {}
-        zhongxings, max_vals = UIMatcher.findpic(screen_shot, template_paths=template_paths)
+        centers, max_vals = UIMatcher.find_pic(screen_shot, template_paths=template_paths)
         for i, name in enumerate(template_paths):
             print(name + '--' + str(round(max_vals[i], 3)), end=' ')
             if max_vals[i] > threshold:
-                return_dic[name] = (zhongxings[i][0] * self.dWidth, zhongxings[i][1] * self.dHeight)
+                return_dic[name] = (centers[i][0] * self.dWidth, centers[i][1] * self.dHeight)
         print('')
         return return_dic
 
@@ -81,7 +82,7 @@ class Automator:
         self.dWidth, self.dHeight = self.d.window_size()
         screen_shot = screen_shot
         template_paths = template_paths
-        active_path = self.get_butt_stat(screen_shot, template_paths)
+        active_path = self.get_button_stat(screen_shot, template_paths)
         if active_path:
             print(active_path)
             if 'img/caidan_tiaoguo.jpg' in active_path:
@@ -100,7 +101,7 @@ class Automator:
                 print('未找到所需的按钮,无动作')
 
     def jiaoxue(self, screen_shot):
-        x, y = UIMatcher.find_gaoliang(screen_shot)
+        x, y = UIMatcher.find_highlight(screen_shot)
         try:
             self.d.click(x * self.dWidth, y * self.dHeight + 20)
         except:
@@ -111,7 +112,7 @@ class Automator:
         gray = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
         ret, binary = cv2.threshold(gray, 130, 255, cv2.THRESH_BINARY)
         num_of_white = len(np.argwhere(binary == 255))
-        active_path = self.get_butt_stat(screen, ['img/kuaijin.jpg', 'img/shouye.jpg', 'img/baoshigoumai.jpg',
+        active_path = self.get_button_stat(screen, ['img/kuaijin.jpg', 'img/shouye.jpg', 'img/baoshigoumai.jpg',
                                                   'img/kuaijin_1.jpg'])
 
         if 'img/baoshigoumai.jpg' in active_path:
@@ -136,8 +137,8 @@ class Automator:
         self.guochang(screen_shot, ['img/caidan.jpg'])
         time.sleep(0.5)
         screen_shot = self.d.screenshot(format="opencv")
-        active_path = self.get_butt_stat(screen_shot,
-                                         ['img/caidan_tiaoguo.jpg', 'img/zhandou_fanhui.jpg', 'img/ok.jpg'])
+        active_path = self.get_button_stat(screen_shot,
+                                           ['img/caidan_tiaoguo.jpg', 'img/zhandou_fanhui.jpg', 'img/ok.jpg'])
         if 'img/ok.jpg' in active_path:
             x, y = active_path['img/ok.jpg']
             print('可以跳过')
@@ -149,7 +150,7 @@ class Automator:
             while True:
                 time.sleep(0.5)
                 screen_shot = self.d.screenshot(format="opencv")
-                active_path = self.get_butt_stat(screen_shot, ['img/wanjiadengji.jpg', 'img/kuaijin.jpg'])
+                active_path = self.get_button_stat(screen_shot, ['img/wanjiadengji.jpg', 'img/kuaijin.jpg'])
                 if 'img/kuaijin.jpg' in active_path:
                     x, y = active_path['img/kuaijin.jpg']
                     self.d.click(x, y)
