@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
-from utils import *
 import matplotlib.pylab as plt
 import os
-import uiautomator2 as u2
 
 
 def cv_imread(file_path):
@@ -22,10 +20,10 @@ class UIMatcher:
     @staticmethod
     def findpic(screen, template_paths=['img/tiaoguo.jpg']):
         # 返回相对坐标
-        '''
+        """
         检测各种按钮(头像?)
         @return: 中心坐标lists, 对应的可信度list
-        '''
+        """
         zhongxings = []
         max_vals = []
         # 增加判断screen方向
@@ -65,10 +63,10 @@ class UIMatcher:
 
     @staticmethod
     def find_gaoliang(screen):
-        '''
+        """
         检测高亮位置(忽略了上板边,防止成就栏弹出遮挡)
         @return: 高亮中心相对坐标[x,y]
-        '''
+        """
         if screen.shape[0] > screen.shape[1]:
             screen = UIMatcher.RotateClockWise90(screen)
         gray = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)
