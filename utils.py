@@ -1,5 +1,6 @@
 import random
 
+
 def random_name():
     # 删减部分，比较大众化姓氏
     firstName = "赵钱孙李周吴郑王冯陈褚卫蒋沈韩杨朱秦尤许何吕施张孔曹严华金魏陶姜戚谢邹喻水云苏潘葛奚范彭郎鲁韦昌马苗凤花方俞任袁柳鲍史唐费岑薛雷贺倪汤滕殷罗毕郝邬安常乐于时傅卞齐康伍余元卜顾孟平" \
@@ -41,8 +42,8 @@ def random_name():
 
         return firstName_name + name_1 + boy_name
 
-def CreatIDnum():
 
+def CreatIDnum():
     jiaoyan = 10
     all_ = 0
     result = 0
@@ -71,7 +72,4 @@ def CreatIDnum():
 
     return result
 
-
 # print(CreatIDnum())
-
-

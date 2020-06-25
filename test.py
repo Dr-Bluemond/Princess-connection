@@ -1,8 +1,7 @@
 import uiautomator2 as u2
-import cv2, numpy as np
+import cv2
+import numpy as np
 from cv import *
-
-
 
 d = u2.connect()
 dWidth, dHeight = d.window_size()
