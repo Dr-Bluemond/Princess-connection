@@ -47,7 +47,7 @@ class UIMatcher:
             y = (max_loc[1] + h // 2) / screen.shape[0]
             centers.append([x, y])
             max_vals.append(max_val)
-            if max_val > 0.8:
+            if max_val > 0.75:
                 cv2.rectangle(screen_show, (int(max_loc[0]), int(max_loc[1])),
                               (int(max_loc[0] + w), int(max_loc[1] + h)), (0, 0, 255), 2)
                 cv2.putText(screen_show, str(round(max_val, 3)) + os.path.basename(template_path),
@@ -91,5 +91,6 @@ if __name__ == '__main__':
     d = u2.connect()
     screen = d.screenshot(format="opencv")
     # screen = cv_imread('test.jpg')
-    UIMatcher.find_highlight(screen)
+    # UIMatcher.find_highlight(screen)
+    UIMatcher.find_pic(screen, ["img/ditu.jpg"])
     plt.show()

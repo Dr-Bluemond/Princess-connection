@@ -4,7 +4,7 @@ from utils import *
 from cv import *
 
 plt.ion()
-fig, ax = plt.subplots(1)
+fig, ax = plt.subplots()
 plt.show()
 
 a = Automator()
@@ -21,17 +21,17 @@ def login_auth(ac, pwd):
 def init_acc():
     while True:
 
-        screen_shot = a.d.screenshot(format="opencv")
-        state_flag = a.get_screen_state(screen_shot)
+        screenshot = a.d.screenshot(format="opencv")
+        state_flag = a.get_screen_state(screenshot)
 
         if state_flag == 'dark':
             print('画面变暗,尝试进入引导模式点击')
-            screen_shot = a.d.screenshot(format="opencv")
-            a.jiaoxue(screen_shot)
+            screenshot = a.d.screenshot(format="opencv")
+            a.follow_guide(screenshot)
 
-        elif state_flag == 'zhandou':
+        elif state_flag == 'fight':
             print('侦测到加速按钮, 进入战斗模式')
-            a.zhandou()
+            a.fight()
         elif state_flag == 'shouye':
             print('恭喜完成所有教学内容, 跳出循环')
             break
@@ -39,7 +39,35 @@ def init_acc():
             template_paths = ['img/tiaoguo.jpg', 'img/ok.jpg', 'img/xiayibu.jpg', 'img/caidan.jpg',
                               'img/caidan_yuan.jpg',
                               'img/caidan_tiaoguo.jpg', 'img/dengji.jpg', 'img/tongyi.jpg', 'img/niudan_jiasu.jpg']
-            a.guochang(screen_shot, template_paths)
+            a.find_and_click(screenshot, template_paths)
+
+
+def clear_3_1():
+    while True:
+        screenshot = a.d.screenshot(format="opencv")
+        state_flag = a.get_screen_state(screenshot)
+        if state_flag == "dark":
+            print('画面变暗,尝试进入引导模式点击')
+            time.sleep(1)
+            a.follow_guide(screenshot)
+            time.sleep(1)
+        elif state_flag == 'fight':
+            print('现在是战斗模式')
+            a.fight()
+        elif not a.get_button_state(screenshot, ['img/maoxian.jpg']):
+            a.find_and_click(screenshot, ['img/guanbi.jpg', 'img/caidan_tiaoguo.jpg', 'img/guanbi.jpg',
+                                          'img/ok.jpg', 'img/zhandou_ok.jpg', 'img/quxiao.jpg', 'img/xiayibu.jpg',
+                                          'img/tongyi.jpg', 'img/niudan_jiasu.jpg'])
+            time.sleep(1)
+        else:
+            if not a.find_next_fight():
+                continue
+            while True:
+                screenshot = a.d.screenshot(format="opencv")
+                if a.get_button_state(screenshot, ['img/kuaijin.jpg', 'img/kuaijin_1.jpg']) == {}:
+                    a.d.click(0.877, 0.845)
+                else:
+                    break
 
 
 def shou_qu():
@@ -47,7 +75,7 @@ def shou_qu():
                    'img/ok.jpg', 'img/zhandou_ok.jpg', 'img/quxiao.jpg']
     for active in active_list:
         screen_shot = a.d.screenshot(format="opencv")
-        a.guochang(screen_shot, [active], suiji=0)
+        a.find_and_click(screen_shot, [active], suiji=0)
         time.sleep(1)
 
 
@@ -58,7 +86,7 @@ def niu_dan():
         time.sleep(1)
         active_list = ['img/ok.jpg', 'img/niudan_jiasu.jpg', 'img/zaicichouqu.jpg', 'img/shilian.jpg']
         screen_shot = a.d.screenshot(format="opencv")
-        a.guochang(screen_shot, active_list, suiji=1)
+        a.find_and_click(screen_shot, active_list, suiji=1)
         screen_shot_ = a.d.screenshot(format="opencv")
         state_flag = a.get_screen_state(screen_shot_)
         if state_flag == 'baoshigoumai':
@@ -83,7 +111,7 @@ def write_log(account, pwd):
     for touxiang_path in os.listdir(base_path):
         touxiang_path_list.append(base_path + touxiang_path)
     screen_shot = a.d.screenshot(format="opencv")
-    exist_list = a.get_button_stat(screen_shot, touxiang_path_list)
+    exist_list = a.get_button_state(screen_shot, touxiang_path_list)
     print(exist_list)
     st = ''
     for i in exist_list:
@@ -92,7 +120,7 @@ def write_log(account, pwd):
         f.write(account + '\t' + pwd + '\t' + st + '\n')
 
 
-def change_acc():
+def logout():
     time.sleep(1)
     a.d.click(871, 513)
     time.sleep(2)
@@ -113,12 +141,13 @@ with open('zhanghao.txt', 'r') as f:
 
 for account in account_dic:
     print(account, account_dic[account])
-    login_auth(account, account_dic[account])
-    init_acc()
-    shou_qu()
-    niu_dan()
-    write_log(account, account_dic[account])
-    change_acc()
+    # login_auth(account, account_dic[account])
+    clear_3_1()
+    # init_acc()
+    # shou_qu()
+    # niu_dan()
+    # write_log(account, account_dic[account])
+    logout()
 
 # 若无账号密码, 注释掉上面的for循环后, 用下面的替换
 # init_acc()
